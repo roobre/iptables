@@ -1,0 +1,41 @@
+*filter
+
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# Interfaces
+# ==========
+
+# Loopback traffic is useful.
+-A INPUT -i lo -j ACCEPT
+# VPN traffic is also nice.
+-A INPUT -i tun+ -j ACCEPT
+
+# Rules
+# =====
+
+# INPUT
+
+# Allow ping
+-A INPUT -p icmp -j ACCEPT
+# Allow UDP traffic.
+#-A INPUT -p udp -j ACCEPT
+# You know what this means.
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# Allow SSH
+-A INPUT -p tcp --dport 22 -j ACCEPT
+# Allow Web
+-A INPUT -p tcp --dport 80 -j ACCEPT
+# Allow NC stuff
+-A INPUT -p tcp --dport 6666 -j ACCEPT
+# Allow Steam streaming
+-A INPUT -p tcp -m multiport --dports 27036,27037 -j ACCEPT
+
+# Make tcp ports appear as closed
+-A INPUT -p tcp -j REJECT --reject-with tcp-reset
+# Reject other protocols
+-A INPUT -j REJECT
+
+COMMIT
