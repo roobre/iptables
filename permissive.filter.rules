@@ -35,6 +35,10 @@
 
 # Make tcp ports appear as closed
 -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+
+# Allow UDP
+-A INPUT -p udp -j ACCEPT
+
 # Reject other protocols
 -A INPUT -j REJECT
 
